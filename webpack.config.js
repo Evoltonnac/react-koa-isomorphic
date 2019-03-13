@@ -1,33 +1,58 @@
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
 
 const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
-  template: `${__dirname}/src/index.html`,
+  template: path.resolve(__dirname,'/public/index.html'),
   filename: 'index.html',
   inject: 'body',
 });
 
-module.exports = {
+const serverConfig = {
+  target: 'node',
+  externals: [nodeExternals()],
+  mode: process.env.NODE_ENV,
   entry: [
-    '.src/index.js',
+    './server/index.js',
   ],
   output: {
-    path: `${__dirname}/dist`,
-    filename: 'index_bundle.js',
+    path: path.resolve(__dirname,'./dist'),
+    filename: 'bundle_server.js',
+    libraryTarget: 'commonjs',
   },
   module: {
-    loaders: [{
-      test: /\.js$/,
-      exclude: /node_modules/,
-      loader: 'babel-loader',
-      query: {
-        presets: ['es2015', 'react'],
+    rules: [
+      {
+        test: /\.(jsx|js)$/,
+        exclude: path.resolve(__dirname,'node_modules'),
+        use: {
+          loader: 'babel-loader',
+        }
       },
-    }],
+    ],
   },
-
-  devServer: {
-    inline: true,
-    port: 8008,
-  },
-  plugins: [HtmlWebpackPluginConfig],
 };
+
+const clientConfig = {
+  mode: process.env.NODE_ENV,
+  entry: [
+    './client/index.js',
+  ],
+  output: {
+    path: path.resolve(__dirname,'./dist'),
+    filename: 'bundle_client.js',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(jsx|js)$/,
+        exclude: path.resolve(__dirname,'node_modules'),
+        use: {
+          loader: 'babel-loader',
+        }
+      },
+    ],
+  },
+};
+
+module.exports = [serverConfig, clientConfig];
