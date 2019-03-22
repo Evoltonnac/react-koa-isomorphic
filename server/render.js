@@ -1,22 +1,40 @@
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
+
 import { StaticRouter }  from 'react-router'
-//import router from '../src/router/router'
+import { matchRoutes } from 'react-router-config'
+import router from '../src/router/router'
+
+import configureStore from '../src/redux/store'
+import { Provider } from 'react-redux'
 
 export default async function render (ctx, next) {
-    //TODO:redux store
+    //match routes
+    const branch = matchRoutes(router, ctx.url)
+    const promises = branch.map(({route, match}) => {
+        return route.loadData
+            ? route.loadData(match)
+            : Promise.resolve(null)
+    })
+    await Promise.all(promises)
+
+    //redux store
+    const store = configureStore()
+    
     const Root = () => (
         <Provider store={store}>
             <StaticRouter
             location={ctx.url}
-            context={{}}>
+            context={context}>
                 <App/>
             </StaticRouter>
         </Provider>
     )
 
     const html = ReactDOMServer.renderToString(<Root/>)
-    
+
+    const preloadedState = store.getState()
+
     ctx.body = `
         <!DOCTYPE html>
         <html lang="en">
@@ -29,8 +47,11 @@ export default async function render (ctx, next) {
         
         <body>
           <div id='root'>
-             ${html}
+            ${html}
           </div>
+          <script>
+            window.__PRELOADED_STATE__= ${JSON.stringify(preloadedState)}
+          </script>
         </body>
         </html>
     `
