@@ -1,6 +1,6 @@
 {
 	"presets": [
-  	"@babel/preset-react",
+	"@babel/preset-react",
   	["@babel/preset-env",{
 			"targets":{
 				"browsers":[
@@ -10,11 +10,12 @@
 					"safari >= 7",
 					"opera >= 23",
 					"bb >= 10"
-				]
+				],
+				"node": "current",
 			}
 		}]
  	],
-	"plugins": [
-		"import"
-	]
+	//"plugins": [
+	//	"import"
+	//]
 }

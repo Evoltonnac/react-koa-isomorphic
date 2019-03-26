@@ -1,15 +1,21 @@
 const Koa = require('koa')
 const app = new Koa()
 const path = require('path')
-const static = require('koa-static')
+const koaStatic = require('koa-static')
+const koaRouter = require('koa-router')
+const router = new koaRouter()
 const bodyParser = require('koa-bodyparser')
-const render = require('./render')
+import render from './render'
 
 app.use(bodyParser())
+console.log("aaaa");
 
-app.use(static(path.join(__dirname,'../public')))
+app.use(koaStatic(path.join(__dirname,'..','dist')))
 
-app.use(render())
+router.get('*',render)
+app
+    .use(router.routes())
+    .use(router.allowedMethods())
 
 app.listen(3000,() => {
     console.log('server started')

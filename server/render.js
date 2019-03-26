@@ -2,34 +2,36 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 
 import { StaticRouter }  from 'react-router'
-import { matchRoutes } from 'react-router-config'
-import router from '../src/router/router'
+import { matchRoutes, renderRoutes } from 'react-router-config'
+import routes from '../src/routes/routes'
 
 import configureStore from '../src/redux/store'
 import { Provider } from 'react-redux'
 
-export default async function render (ctx, next) {
+const render = async(ctx, next) => {
     //match routes
-    const branch = matchRoutes(router, ctx.url)
+    const branch = matchRoutes(routes, ctx.url)
     const promises = branch.map(({route, match}) => {
         return route.loadData
             ? route.loadData(match)
             : Promise.resolve(null)
     })
     await Promise.all(promises)
-
+    console.log(ctx.url)
     //redux store
     const store = configureStore()
     
-    const Root = () => (
-        <Provider store={store}>
-            <StaticRouter
-            location={ctx.url}
-            context={context}>
-                <App/>
-            </StaticRouter>
-        </Provider>
-    )
+    const Root = () => {
+        return (
+          	<Provider store={store}>
+              	<StaticRouter
+              	location={ctx.url}
+              	context={{}}>
+                  	{renderRoutes(routes)}
+              	</StaticRouter>
+          	</Provider>
+        )
+    }
 
     const html = ReactDOMServer.renderToString(<Root/>)
 
@@ -52,7 +54,10 @@ export default async function render (ctx, next) {
           <script>
             window.__PRELOADED_STATE__= ${JSON.stringify(preloadedState)}
           </script>
+          <script type="text/javascript" src="bundle_client.js"></script>
         </body>
         </html>
     `
 }
+
+export default render

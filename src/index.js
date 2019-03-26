@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
-import './index.css'
-import App from './App'
+import { renderRoutes } from 'react-router-config'
+import routes from './routes/routes'
 
 import configureStore from './redux/store'
 import { Provider } from 'react-redux'
@@ -13,11 +13,13 @@ delete window.__PRELOADED_STATE__
 
 const store = configureStore(preloadedState)
 
+console.log("now client")
+
 const Root = () => {
     return (
         <Provider store={store}>
             <BrowserRouter>
-            <App/>
+                {renderRoutes(routes)}
             </BrowserRouter>
         </Provider>
     )

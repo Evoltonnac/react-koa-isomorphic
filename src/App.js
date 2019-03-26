@@ -1,11 +1,21 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import { Route, Switch, Link } from 'react-router-dom'
+import { renderRoutes } from 'react-router-config'
+import routes from './routes/routes'
+//import logo from './logo.svg';
+//import './App.css';
 
-class App extends Component {
-  render() {
+const App = ({route}) => {
     return (
-      <div className="App">
+			<div>
+				<ul>
+					<Link to='/'>Index</Link>
+					<Link to='/count'>Count</Link>
+				</ul>
+				<hr/>
+					{renderRoutes(route.routes)}
+			</div>
+      /*<div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <p>
@@ -20,9 +30,8 @@ class App extends Component {
             Learn React
           </a>
         </header>
-      </div>
+      </div>*/
     );
-  }
 }
 
 export default App;
