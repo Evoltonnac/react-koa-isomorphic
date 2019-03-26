@@ -8,6 +8,7 @@ const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
   inject: 'body',
 });
 
+//no need to pack backend
 const serverConfig = {
   target: 'node',
   externals: [nodeExternals()],
@@ -23,10 +24,31 @@ const serverConfig = {
   module: {
     rules: [
       {
-        test: /\.(jsx|js)$/,
+        test: /\.(jsx|js)?$/,
         exclude: path.resolve(__dirname,'node_modules'),
         use: {
           loader: 'babel-loader',
+          options: {
+            "presets": [
+              "@babel/preset-react",
+                ["@babel/preset-env",{
+                  "targets":{
+                    "browsers":[
+                      "ie >= 9",
+                      "ff >= 30",
+                      "chrome >= 34",
+                      "safari >= 7",
+                      "opera >= 23",
+                      "bb >= 10"
+                    ],
+                    "node": "current",
+                  }
+                }]
+            ],
+            plugins: [
+              ["@babel/plugin-transform-runtime",{}]
+            ]
+          }
         }
       },
       {
@@ -42,14 +64,27 @@ const serverConfig = {
           'sass-loader',
         ]
       },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1
+            }
+          },
+        ]
+      },
     ],
   },
+  devtool: "cheap-module-eval-sourcemap",
 };
 
 const clientConfig = {
   mode: process.env.NODE_ENV,
   entry: [
-    './client/index.js',
+    './src/index.js',
   ],
   output: {
     path: path.resolve(__dirname,'./dist'),
@@ -72,8 +107,15 @@ const clientConfig = {
           'sass-loader',
         ]
       },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader',
+        ]
+      },
     ],
   },
 };
 
-module.exports = [serverConfig, clientConfig];
+module.exports = [clientConfig];
