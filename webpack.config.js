@@ -1,3 +1,4 @@
+//the following is considered of development config
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
@@ -8,22 +9,23 @@ const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
   inject: 'body',
 });
 
-//no need to pack backend
+//pack render.js as router entry of server 
 const serverConfig = {
   target: 'node',
   externals: [nodeExternals()],
   mode: process.env.NODE_ENV,
   entry: [
-    './server/index.js',
+    './server/render.js',
   ],
   output: {
     path: path.resolve(__dirname,'./dist'),
     filename: 'bundle_server.js',
-    libraryTarget: 'commonjs',
+    libraryTarget: 'umd',
   },
   module: {
     rules: [
       {
+        //babel loader node environment config
         test: /\.(jsx|js)?$/,
         exclude: path.resolve(__dirname,'node_modules'),
         use: {
@@ -78,9 +80,11 @@ const serverConfig = {
       },
     ],
   },
+  //easy to debug
   devtool: "cheap-module-eval-sourcemap",
 };
 
+//pack index.js as client entry
 const clientConfig = {
   mode: process.env.NODE_ENV,
   entry: [
@@ -118,4 +122,4 @@ const clientConfig = {
   },
 };
 
-module.exports = [clientConfig];
+module.exports = [clientConfig, serverConfig];

@@ -37,6 +37,7 @@ const render = async(ctx, next) => {
 
     const preloadedState = store.getState()
 
+    //embed string in html template
     ctx.body = `
         <!DOCTYPE html>
         <html lang="en">
