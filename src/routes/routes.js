@@ -1,5 +1,5 @@
 import App from '../App'
-import Count from '../component/Count'
+import Counter from '../component/Counter'
 
 //react-router-v4 router config
 const routes = [
@@ -7,8 +7,8 @@ const routes = [
         component: App,
         routes: [
             {
-                path: '/count',
-                component: Count,
+                path: '/counter',
+                component: Counter,
             }
         ]
     }

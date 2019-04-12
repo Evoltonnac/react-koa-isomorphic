@@ -53,7 +53,9 @@ const render = async(ctx, next) => {
             ${html}
           </div>
           <script>
-            window.__PRELOADED_STATE__= ${JSON.stringify(preloadedState)}
+            window.context = {
+              state: ${JSON.stringify(preloadedState)}
+            }
           </script>
           <script type="text/javascript" src="bundle_client.js"></script>
         </body>

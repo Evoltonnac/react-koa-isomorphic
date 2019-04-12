@@ -7,9 +7,8 @@ import routes from './routes/routes'
 import configureStore from './redux/store'
 import { Provider } from 'react-redux'
 //TODO: redux store
-const preloadedState = window.__PRELOADED_STATE__ || undefined
-
-delete window.__PRELOADED_STATE__
+const preloadedState = window.context.state
+console.log(JSON.stringify(preloadedState))
 
 const store = configureStore(preloadedState)
 

@@ -10,7 +10,7 @@ const App = ({route}) => {
 			<div>
 				<ul>
 					<Link to='/'>Index</Link>
-					<Link to='/count'>Count</Link>
+					<Link to='/counter'>Counter</Link>
 				</ul>
 				<hr/>
 					{renderRoutes(route.routes)}
